@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "kafka_es_func": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7180",
+      "launchBrowser": false
+    }
+  }
+}
