@@ -262,3 +262,12 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+*.pem
+*.p12
+*.jks
+
+./storm-events-producer/*.jks
+./storm-events-producer/*.pem
+./storm-events-producer/*.p12
+secrets/cert_creds

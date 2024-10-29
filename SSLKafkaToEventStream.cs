@@ -14,22 +14,20 @@ namespace KafkaToEventStreamIsolatedFunctions
         }
 
         [Function("SSLKafkaToEventStream")]
-        [FixedDelayRetry(5, "00:00:10")]
-        [EventHubOutput("dest", Connection = "EventHubConnection")]
+        // [FixedDelayRetry(5, "00:00:10")]
+        // [EventHubOutput("dest", Connection = "EventHubConnection")]
         public void Run(
-        [KafkaTrigger("BrokerList",
-                    "topic",
-                    Username = "ConfluentCloudUserName",
-                    Password = "ConfluentCloudPassword",
+        [KafkaTrigger("%CONNECT_BOOTSTRAP_SERVERS%","%CONNECT_TOPIC%",
                     Protocol = BrokerProtocol.Ssl,
-                    SslKeyLocation = "",
-                    SslKeyPassword = "",
-                    SslCaLocation = "",
-                    SslCertificateLocation = "",
-                    AuthenticationMode = BrokerAuthenticationMode.,
-                    ConsumerGroup = "$Default")] string eventData, FunctionContext context)
+                    SslKeyLocation = "%CONNECT_SSL_KEYSTORE_LOCATION%",
+                    SslKeyPassword = "%CONNECT_SSL_KEYSTORE_PASSWORD%",
+                    SslCaLocation = "%CONNECT_SSL_CA_LOCATION%",
+                    SslCertificateLocation = "%CONNECT_SSL_TRUSTSTORE_LOCATION%",
+                    IsBatched = false,
+                    ConsumerGroup = "%CONNECT_GROUP_ID%"
+                    )] string eventData, FunctionContext context)
         {
-            _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
+            _logger.LogInformation($"Message: {eventData}");
         }
     }
 }

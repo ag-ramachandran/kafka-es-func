@@ -41,6 +41,23 @@ do
 done
 
 echo "datahub" > secrets/cert_creds
+
+cd storm-events-producer
+keytool -importkeystore -srckeystore ../secrets/producer.truststore.jks -destkeystore server.p12 -deststoretype PKCS12 -keypass datahub -deststorepass datahub -storepass datahub -srcstorepass datahub
+openssl pkcs12 -in server.p12 -nokeys -out server.cer.pem -legacy -passin pass:datahub 
+openssl pkcs12 -in server.p12 -nodes -nocerts -out server.key.pem -legacy -passin pass:datahub 
+keytool -importkeystore -srckeystore ../secrets/producer.keystore.jks -destkeystore client.p12 -deststoretype PKCS12 -keypass datahub -deststorepass datahub -storepass datahub -srcstorepass datahub
+openssl pkcs12 -in client.p12 -nokeys -out client.cer.pem -legacy -passin pass:datahub 
+openssl pkcs12 -in client.p12 -nodes -nocerts -out client.key.pem -legacy -passin pass:datahub 
+
+cd ..
+
+keytool -importkeystore -srckeystore ./secrets/consumer.truststore.jks -destkeystore consumer.p12 -srcstoretype jks -deststoretype pkcs12 -keypass datahub -deststorepass datahub -storepass datahub -srcstorepass datahub
+openssl pkcs12 -in consumer.p12 -out CARoot.pem -legacy -passin pass:datahub 
+keytool -exportcert -alias consumer -keystore ./secrets/consumer.keystore.jks -rfc -file ./certificate.pem -storepass datahub
+keytool -importkeystore -srckeystore ./secrets/consumer.keystore.jks -destkeystore keystore.p12 -deststoretype PKCS12 -storepass datahub -srcstorepass datahub
+openssl pkcs12 -in keystore.p12 -nodes -nocerts -out RSAkey.pem -legacy -passin pass:datahub 
+
 rm -rf tmp
 
 echo "SUCCEEDED"
