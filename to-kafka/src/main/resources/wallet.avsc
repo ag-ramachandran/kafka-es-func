@@ -1,0 +1,20 @@
+{
+"fields":[
+    { "name": "id", "type": "string" },
+    { "name": "amount", "type": "double" },
+    { "name": "type", "type": "string"},
+    {"name": "payoutId", "type": "string" },
+    { "name": "payoutStatus", "type": "string"},
+    { "name": "currency", "type": "string" },
+    { "name": "fee", "type": "double" },
+    { "name": "sourceId", "type": "string" },
+    { "name": "sourceType", "type": "string" },
+    { "name": "processedAt", "type": "string"},
+    { "name": "customerId", "type": "string" },
+    { "name": "walletId", "type": "string" }
+  ],
+  "name": "WalletTransaction",
+  "namespace": "com.microsoft.entity.wallet",
+    "type": "record"
+}
+

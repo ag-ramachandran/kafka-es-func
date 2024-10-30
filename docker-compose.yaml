@@ -40,7 +40,7 @@ services:
 
   kafka-es-func:
     build:
-      context: .
+      context: ./kafka-es-function
     links:
       - ${BROKER_HOST}
     depends_on:
@@ -49,7 +49,7 @@ services:
     networks:
       - test      
     environment:
-      CONNECT_TOPIC: 'storm-events'
+      CONNECT_TOPIC: 'wallet-payments' # storm-events
       CONNECT_BOOTSTRAP_SERVERS: '${BROKER_HOST}:${BROKER_PORT}'
       CONNECT_GROUP_ID: adx
       # CONNECT_KAFKASTORE_SECURITY_PROTOCOL: SSL
@@ -60,24 +60,85 @@ services:
       CONNECT_SSL_KEY_PASSWORD: ${SSL_SECRET}
       CONNECT_SSL_TRUSTSTORE_LOCATION: /opt/cert/certificate.pem
       CONNECT_SSL_TRUSTSTORE_PASSWORD: ${SSL_SECRET}
+      CONNECT_SCHEMA_REGISTRY_URL: 'http://${SR_HOST}:${SR_PORT}'
     volumes:
       - ./secrets:/etc/kafka/secrets
 
-  events-producer:
+  # events-producer:
+  #   build:
+  #     context: ./storm-events-producer
+  #   links:
+  #     - ${BROKER_HOST}
+  #   depends_on:
+  #     - ${ZK_HOST}
+  #     - ${BROKER_HOST}
+  #   restart: always
+  #   networks:
+  #     - test         
+  #   environment:
+  #     KAFKA_BOOTSTRAP_SERVER: '${BROKER_HOST}:${BROKER_PORT}'
+  #     KAFKA_TOPIC: 'storm-events'
+  #     SOURCE_FILE: 'StormEvents.csv'
+
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry
+    container_name: ${SR_HOST}
+    hostname: ${SR_HOST}
+    depends_on:
+      - ${ZK_HOST}
+      - ${BROKER_HOST}
+    ports:
+      - "${SR_PORT}:${SR_PORT}"
+    networks:
+      - test      
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: ${SR_HOST}
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:${SR_PORT}'
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: '${ZK_HOST}:${ZK_PORT}'
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'SSL://${BROKER_HOST}:${BROKER_PORT}'
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SSL
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_LOCATION: /etc/schema-registry/secrets/schema-registry.keystore.jks
+      SCHEMA_REGISTRY_SSL_KEYSTORE_LOCATION: /etc/schema-registry/secrets/schema-registry.keystore.jks
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEYSTORE_PASSWORD: ${SSL_SECRET}
+      SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD: ${SSL_SECRET}
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_KEY_PASSWORD: ${SSL_SECRET}
+      SCHEMA_REGISTRY_SSL_KEY_PASSWORD: ${SSL_SECRET}
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_LOCATION: /etc/schema-registry/secrets/schema-registry.truststore.jks
+      SCHEMA_REGISTRY_SSL_TRUSTSTORE_LOCATION: /etc/schema-registry/secrets/schema-registry.truststore.jks
+      SCHEMA_REGISTRY_KAFKASTORE_SSL_TRUSTSTORE_PASSWORD: ${SSL_SECRET}
+      SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD: ${SSL_SECRET}
+      # SCHEMA_REGISTRY_SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL: https
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC: _schemas
+      # SCHEMA_REGISTRY_SSL_CLIENT_AUTH: 'true'
+    volumes:
+      - ./secrets:/etc/schema-registry/secrets
+
+
+
+  avro_producer:
     build:
-      context: ./storm-events-producer
+      context: ./to-kafka
     links:
       - ${BROKER_HOST}
     depends_on:
       - ${ZK_HOST}
       - ${BROKER_HOST}
-    restart: always
+      - ${SR_HOST}
     networks:
-      - test         
+      - test      
     environment:
-      KAFKA_BOOTSTRAP_SERVER: '${BROKER_HOST}:${BROKER_PORT}'
-      KAFKA_TOPIC: 'storm-events'
-      SOURCE_FILE: 'StormEvents.csv'
+      CONNECT_TOPIC: 'wallet-payments'
+      PRODUCER_BOOTSTRAP_SERVERS: '${BROKER_HOST}:${BROKER_PORT}'
+      PRODUCER_SSL_TRUSTSTORE_LOCATION: /opt/cert/producer.truststore.jks
+      PRODUCER_SSL_TRUSTSTORE_PASSWORD: ${SSL_SECRET}
+      PRODUCER_SSL_KEYSTORE_LOCATION: /opt/cert/producer.keystore.jks
+      PRODUCER_SSL_KEYSTORE_PASSWORD: ${SSL_SECRET}
+      PRODUCER_KEY_PASSWORD: ${SSL_SECRET}
+      CONNECT_SR_URL: 'http://${SR_HOST}:${SR_PORT}'
+    volumes:
+      - ./secrets:/etc/kafka/secrets
+
 
 networks:
   test:
