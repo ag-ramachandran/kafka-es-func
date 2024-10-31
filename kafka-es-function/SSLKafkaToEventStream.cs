@@ -24,8 +24,7 @@ namespace KafkaToEventStreamIsolatedFunctions
                     SslCaLocation = "%CONNECT_SSL_CA_LOCATION%",
                     SslCertificateLocation = "%CONNECT_SSL_TRUSTSTORE_LOCATION%",
                     IsBatched = false,
-                    SchemaRegistryUrl = "%CONNECT_SCHEMA_REGISTRY_URL%",
-                    
+                    SchemaRegistryUrl = "%CONNECT_SCHEMA_REGISTRY_URL%",                    
                     ConsumerGroup = "%CONNECT_GROUP_ID%"
                     )] string eventData, FunctionContext context)
         {
