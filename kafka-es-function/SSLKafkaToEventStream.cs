@@ -1,4 +1,4 @@
-using System;
+using com.microsoft.entity.wallet;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +26,7 @@ namespace KafkaToEventStreamIsolatedFunctions
                     IsBatched = false,
                     SchemaRegistryUrl = "%CONNECT_SCHEMA_REGISTRY_URL%",                    
                     ConsumerGroup = "%CONNECT_GROUP_ID%"
-                    )] string eventData, FunctionContext context)
+                    )] WalletTransaction eventData, FunctionContext context)
         {
             _logger.LogInformation($"Message: {eventData}");
         }

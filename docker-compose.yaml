@@ -38,9 +38,35 @@ services:
     volumes:
       - ./secrets:/etc/kafka/secrets
 
-  kafka-es-func:
+  # kafka-es-func:
+  #   build:
+  #     context: ./kafka-es-function
+  #   links:
+  #     - ${BROKER_HOST}
+  #   depends_on:
+  #     - ${ZK_HOST}
+  #     - ${BROKER_HOST}
+  #   networks:
+  #     - test      
+  #   environment:
+  #     CONNECT_TOPIC: 'wallet-payments' # storm-events
+  #     CONNECT_BOOTSTRAP_SERVERS: '${BROKER_HOST}:${BROKER_PORT}'
+  #     CONNECT_GROUP_ID: adx
+  #     # CONNECT_KAFKASTORE_SECURITY_PROTOCOL: SSL
+  #     CONNECT_SECURITY_PROTOCOL: SSL
+  #     CONNECT_SSL_KEYSTORE_LOCATION: /opt/cert/RSAkey.pem
+  #     CONNECT_SSL_CA_LOCATION: /opt/cert/CARoot.pem
+  #     CONNECT_SSL_KEYSTORE_PASSWORD: ${SSL_SECRET}
+  #     CONNECT_SSL_KEY_PASSWORD: ${SSL_SECRET}
+  #     CONNECT_SSL_TRUSTSTORE_LOCATION: /opt/cert/certificate.pem
+  #     CONNECT_SSL_TRUSTSTORE_PASSWORD: ${SSL_SECRET}
+  #     CONNECT_SCHEMA_REGISTRY_URL: 'http://${SR_HOST}:${SR_PORT}'
+  #   volumes:
+  #     - ./secrets:/etc/kafka/secrets
+
+  kafka-es-function-inproc:
     build:
-      context: ./kafka-es-function
+      context: ./kafka-es-function-inproc
     links:
       - ${BROKER_HOST}
     depends_on:

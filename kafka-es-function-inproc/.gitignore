@@ -262,16 +262,3 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
-
-*.pem
-*.p12
-*.jks
-
-./storm-events-producer/*.jks
-./storm-events-producer/*.pem
-./storm-events-producer/*.p12
-secrets/cert_creds
-kafka-es-function/.vscode/extensions.json
-kafka-es-function/Properties/launchSettings.json
-kafka-es-function-inproc/.vscode/extensions.json
-kafka-es-function-inproc/Properties/launchSettings.json
