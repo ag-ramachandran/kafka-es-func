@@ -58,6 +58,12 @@ keytool -exportcert -alias consumer -keystore ./secrets/consumer.keystore.jks -r
 keytool -importkeystore -srckeystore ./secrets/consumer.keystore.jks -destkeystore keystore.p12 -deststoretype PKCS12 -storepass datahub -srcstorepass datahub
 openssl pkcs12 -in keystore.p12 -nodes -nocerts -out RSAkey.pem -legacy -passin pass:datahub 
 
+cp RSAkey.pem ./kafka-es-function
+cp CARoot.pem ./kafka-es-function
+cp certificate.pem ./kafka-es-function
+cp consumer.p12 ./kafka-es-function
+
+
 rm -rf tmp
 
 echo "SUCCEEDED"
