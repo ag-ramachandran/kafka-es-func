@@ -275,3 +275,5 @@ kafka-es-function/.vscode/extensions.json
 kafka-es-function/Properties/launchSettings.json
 kafka-es-function-inproc/.vscode/extensions.json
 kafka-es-function-inproc/Properties/launchSettings.json
+.vscode/settings.json
+.vscode/settings.json

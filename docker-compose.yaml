@@ -87,6 +87,9 @@ services:
       CONNECT_SSL_TRUSTSTORE_LOCATION: /opt/cert/certificate.pem
       CONNECT_SSL_TRUSTSTORE_PASSWORD: ${SSL_SECRET}
       CONNECT_SCHEMA_REGISTRY_URL: 'http://${SR_HOST}:${SR_PORT}'
+      EVENTSTREAM_NAME : '${EVENTSTREAM_NAME}'
+      ES_CONNECTION : '${EVENTSTREAM_CONNECTION_STRING}'
+
     volumes:
       - ./secrets:/etc/kafka/secrets
 
